@@ -1,0 +1,33 @@
+<script type="text/discourse-plugin" version="0.8">
+    
+    const { showModal } = require("discourse/lib/show-modal");
+    const loginMethodObj = require("discourse/models/login-method");
+    api.modifyClass('route:application',{
+        //Modifed by Webdirekt to alway Login through JOSSO and Register new User through Liferay
+        _autoLogin(modal, modalClass, notAuto) {
+            
+            const methods = loginMethodObj.findAll();
+            
+            const signupURL = "http://techcommunity.softwareag.com/signup/";
+            //const signupURL = "http://server76.dmz.hq.sag/signup/";
+            
+            //const methods = findAll();
+            //if (!this.siteSettings.enable_local_logins && methods.length === 1) {
+            
+            if (modal === "login" && methods.length === 1) {
+              this.controllerFor("login").send("externalLogin", methods[0]);
+            } 
+            else if(modal === "createAccount"){
+                return window.location = signupURL;
+            }
+            else {
+              //showModal(modal);
+              //this.controllerFor("modal").set("modalClass", modalClass);
+              //if (notAuto) {
+              //  notAuto();
+             //}
+            }
+        }
+        
+    });
+</script>    
